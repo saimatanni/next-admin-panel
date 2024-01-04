@@ -10,8 +10,17 @@ import { PricingCard, PageHeading, FeatureLeftTopIcon } from "widgets";
 import { standard, multisite, extended } from "data/pricing/PricingPlansData";
 import FAQsData from "data/pricing/FAQsData";
 import FeaturesData from "data/pricing/FeaturesData";
+import { GetDashboardData, GetDashboardData2 } from "app/redux/authSlice";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 const Pricing = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(GetDashboardData());
+    dispatch(GetDashboardData2());
+  }, []);
+
   return (
     <Container fluid className="p-6">
       {/* Page Heading */}

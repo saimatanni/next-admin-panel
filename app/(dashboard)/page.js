@@ -1,69 +1,63 @@
-'use client'
-// import node module libraries
-import { Fragment } from "react";
-import Link from 'next/link';
-import { Container, Col, Row } from 'react-bootstrap';
+// pages/index.js
+import axios from "axios";
+import DashboardData from "data/dashboard/DashboardData";
+import { cookies } from "next/headers";
 
-// import widget/custom components
-import { StatRightTopIcon } from "widgets";
+const Home = async () => {
+  const cookieStore = cookies();
+  const token = cookieStore.get("access_token");
+console.log('token', token)
+  const users = await getUser(token.value);
+  const notificationList = await getNotification(token.value);
+  return (
+    <div>
+      <DashboardData
+        data={users.data}
+        notificationList={notificationList.data}
+      />
+    </div>
+  );
+};
+async function getUser(token) {
+  try {
+    const headers = {
+      Authorization: `Token ${token}`,
+    };
 
-// import sub components
-import { ActiveProjects, Teams, 
-    TasksPerformance 
-} from "sub-components";
+    const response = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}api/v1/auth/dashboard/`,
+      { headers }
+    );
 
-// import required data files
-import ProjectsStatsData from "data/dashboard/ProjectsStatsData";
+    if (response.status !== 200) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
 
-const Home = () => {
-    return (
-        <Fragment>
-            {/* <div className="bg-primary pt-10 pb-21"></div> */}
-            <Container fluid className="mt-n22 px-6">
-                <Row>
-                      {/* Page header */}
-                    {/* <Col lg={12} md={12} xs={12}>
-                      
-                        <div>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div className="mb-2 mb-lg-0">
-                                    <h3 className="mb-0  text-white">Projects</h3>
-                                </div>
-                                <div>
-                                    <Link href="#" className="btn btn-white">Create New Project</Link>
-                                </div>
-                            </div>
-                        </div>
-                    </Col>
-                    {ProjectsStatsData.map((item, index) => {
-                        return (
-                            <Col xl={3} lg={6} md={12} xs={12} className="mt-6" key={index}>
-                                <StatRightTopIcon info={item} />
-                            </Col>
-                        )
-                    })} */}
-                </Row>
+    return response.data;
+  } catch (error) {
+    console.error("Error during API call:", error);
+    throw error;
+  }
+}
+async function getNotification(token) {
+  try {
+    const headers = {
+      Authorization: `Token ${token}`,
+    };
 
-                {/* Active Projects  */}
-                {/* <ActiveProjects /> */}
+    const response = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}api/v1/auth/notification/?offset=0&limit=10`,
+      { headers }
+    );
 
-                {/* <Row className="my-6">
-                    <Col xl={4} lg={12} md={12} xs={12} className="mb-6 mb-xl-0">
+    if (response.status !== 200) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
 
-       
-                        <TasksPerformance />
-
-                    </Col>
-     
-                    <Col xl={8} lg={12} md={12} xs={12}>
-
-            
-                        <Teams />
-
-                    </Col>
-                </Row> */}
-            </Container>
-        </Fragment>
-    )
+    return response.data;
+  } catch (error) {
+    console.error("Error during API call:", error);
+    throw error;
+  }
 }
 export default Home;
