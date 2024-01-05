@@ -12,7 +12,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const SignIn = () => {
-  const route = useRouter();
+  // const { data: session, status } = ()
+  const router = useRouter();
   const loginSuccess = useSelector((data) => data.loginInfo);
 
   const hasMounted = useMounted();
@@ -21,8 +22,9 @@ const SignIn = () => {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
+    // back: `${route.push('/')}`
   });
-
+ 
   const handleInputChange = (e) => {
     setCredentials({
       ...credentials,
@@ -39,15 +41,15 @@ const SignIn = () => {
     e.preventDefault();
 
     try {
-      console.log("signin", "signin");
       // Sign in using NextAuth.js
       await signIn("credentials", {
-        email:credentials.email,
-        password:credentials.password,
-        redirect:false
+        email: credentials.email,
+        password: credentials.password,
+        redirect: false,
         // callbackUrl: "/",
       });
-
+      router.push("/");
+      // router.replace("/");
       // If signIn succeeds, the user will be redirected, no need for explicit redirection here
     } catch (error) {
       // Handle sign-in error, if needed
@@ -145,13 +147,6 @@ const SignIn = () => {
           </Card.Body>
         </Card>
       </Col>
-      <button
-        onClick={() => {
-          signIn();
-        }}
-      >
-        Login
-      </button>
     </Row>
   );
 };

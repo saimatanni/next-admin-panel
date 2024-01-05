@@ -1,8 +1,8 @@
-import nextAuth from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import cookie from "js-cookie";
 
- const login = (credentials) => async (dispatch) => {
+
+async function login(credentials) {
   try {
     const response = await fetch(
       "https://partneruat-backend.paymentsave.co.uk/api/v1/auth/login/",
@@ -16,18 +16,16 @@ import cookie from "js-cookie";
     );
 
     const data = await response.json();
-    console.log("data", data);
-    if (response.ok) {
-      cookie.set("access_token", data.data.token, { expires: 7, path: "/" }); // Set the cookie to expire in 1 day (adjust as needed)
-      // localStorage.setItem("access_token", data.data.token); // Assuming your API returns user data upon successful login
-    } else {
-      // dispatch(loginFailure(data.error)); // Assuming your API returns an error message upon failed login
+
+    if (data.status === 'success') {
+      // cookie.set("access_token", data.data.token, { expires: 7, path: "/" });
+      return data;
     }
   } catch (error) {
     console.error("An error occurred during sign-in:", error);
-    //   dispatch(loginFailure("An unexpected error occurred."));
   }
-};
+}
+
 export const authOptions = {
   pages: {
     signIn: "authentication/sign-in",
@@ -38,16 +36,44 @@ export const authOptions = {
       credentials: {},
       async authorize(credentials) {
         try {
-          console.log("cretentials", credentials);
           const user = await login(credentials);
           return user;
         } catch (error) {
           console.log("error", error);
-          return null;
+          throw new Error('Failed to log in')
+          // return null;
         }
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.email = user.data.email;
+        token.id = user.data.id;
+        token.token = user.data.token;
+      }
+      // console.log('token :>> ', token);
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.email = token.email;
+        session.user.id = token.id;
+        session.user.token = token.token;
+      }
+      // console.log('session :>> ', session);
+      return session;
+    },
+    async redirect({ baseUrl, }) {
+     
+      // if(session){
+        return baseUrl; // Redirect to the home page after successful login
+      // }
+      
+    },
+  },
 };
-const handler = nextAuth(authOptions);
+
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

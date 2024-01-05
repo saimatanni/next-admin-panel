@@ -36,7 +36,7 @@ const Slice = createSlice({
       };
       state.userdata.push(data);
       let userData = JSON.stringify(current(state.userdata));
-      localStorage.setItem("users", userData);
+      // localStorage.setItem("users", userData);
     },
     removeUser: (state, action) => {
       console.log("action", action);
@@ -45,7 +45,7 @@ const Slice = createSlice({
       });
       state.userdata = data;
       //   let userData=JSON.stringify(current(state.userdata))
-      localStorage.setItem("users", JSON.stringify(data));
+      // localStorage.setItem("users", JSON.stringify(data));
     },
   },
   extraReducers: (builder) => {

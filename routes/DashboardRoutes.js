@@ -1,3 +1,4 @@
+import { signOut } from 'next-auth/react';
 import { v4 as uuid } from 'uuid';
 /**
  *  All Dashboard Routes
@@ -63,7 +64,8 @@ export const DashboardMenu = [
 		id: uuid(),
 		title: 'Logout',
 		icon: 'layout',
-		link: '/authentication/sign-in'
+		link: '/authentication/sign-in',
+		// link:signOut()
 	},	
 	// {
 	// 	id: uuid(),

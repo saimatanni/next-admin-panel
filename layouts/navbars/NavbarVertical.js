@@ -1,8 +1,8 @@
 "use client";
 // import node module libraries
-import { Fragment, useContext } from "react";
+import { Fragment, useContext, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 import { ListGroup, Card, Image, Badge } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
@@ -15,9 +15,18 @@ import "simplebar/dist/simplebar.min.css";
 
 // import routes file
 import { DashboardMenu } from "routes/DashboardRoutes";
+import { signOut, useSession } from "next-auth/react";
 
 const NavbarVertical = (props) => {
   const location = usePathname();
+  const router =useRouter()
+  const { data: session, status } = useSession()
+  console.log('status2 :>> ', status);
+  useEffect(()=>{
+    if(status=== "unauthenticated"){
+      router.push('/authentication/sign-in')
+    }
+      },[status])
   const CustomToggle = ({ children, eventKey, icon }) => {
     const { activeEventKey } = useContext(AccordionContext);
     const decoratedOnClick = useAccordionButton(eventKey, () =>
@@ -303,7 +312,7 @@ const NavbarVertical = (props) => {
                 return (
                   <Card bsPrefix="nav-item" key={index}>
                     {/* menu item without any childern items like Documentation and Changelog items*/}
-                    <Link
+                    <Link onClick={()=> menu.title==="Logout"&& signOut()}
                       href={menu.link}
                       className={`nav-link ${
                         location === menu.link ? "active" : ""
