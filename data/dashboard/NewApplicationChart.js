@@ -70,9 +70,7 @@ export default function NewApplicationChart({ allChart }) {
   const year_applications_label = allChart
     ? Object?.keys(allChart?.yearly_applications)
     : [];
-  // const year_applications_value = allChart
-  //   ? Object?.values(allChart?.yearly_applications)
-  //   : [];
+  
 
   const year_applications_value = allChart
     ? [
@@ -92,7 +90,7 @@ export default function NewApplicationChart({ allChart }) {
         const splitArray = element.split("_");
         return splitArray.map((word) => word.toUpperCase()).join(" ");
       }
-      console.log("element :>> ", element);
+
       return element.toUpperCase();
     });
     // Filter out specific values

@@ -1,55 +1,53 @@
 // pages/index.js
+import { authOptions } from "app/api/auth/[...nextauth]/route";
 import axios from "axios";
 import DashboardData from "data/dashboard/DashboardData";
-// import { useSession } from "next-auth/react";
-import { cookies } from "next/headers";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+//dashboard
+const Home = async () => {
+  const session = await getServerSession(authOptions);
 
-const  Home =  async () => {
-  // const { data: session, status } = getServerSession()
-  // const session = await getServerSession(authOptions)
+  if (!session || !session?.user) {
+    redirect("/authentication/sign-in");
+  }
+  const token = session?.user?.token;
 
- 
-  const session = await getServerSession(authOptions)
-   console.log('user data',session);
-  return <pre>{JSON.stringify(session, null, 2)}</pre>
-// console.log('user token', session?.user)
-// const token = await session?.user?.token
-  // const users = await getUser(token);
-  // const notificationList = await getNotification(token);
+  const users = await getUser(token);
+  const notificationList = await getNotification(token);
   return (
     <div>
-      {/* <DashboardData
+      <DashboardData
         data={users.data}
         notificationList={notificationList.data}
-      /> */}
+      />
     </div>
   );
 };
 async function getUser(token) {
-  console.log('token2 :>> ', token);
-  // try {
-  //   const headers = {
-  //     Authorization: `Token ${token}`,
-  //   };
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
+  try {
+    const headers = {
+      Authorization: `Token ${token}`,
+    };
 
-  //   const response = await axios.get(
-  //     `${process.env.REACT_APP_BASE_URL}api/v1/auth/dashboard/`,
-  //     { headers }
-  //   );
+    const response = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}api/v1/auth/dashboard/`,
+      { headers }
+    );
 
-  //   if (response.status !== 200) {
-  //     throw new Error(`API request failed with status ${response.status}`);
-  //   }
+    if (response.status !== 200) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
 
-  //   return response.data;
-  // } catch (error) {
-  //   console.error("Error during API call:", error);
-  //   throw error;
-  // }
+    return response.data;
+  } catch (error) {
+    console.error("Error during API call:", error);
+    throw error;
+  }
 }
 async function getNotification(token) {
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
   try {
     const headers = {
       Authorization: `Token ${token}`,

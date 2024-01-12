@@ -62,7 +62,7 @@ export default function UpfrontCommissionChart({ allChart }) {
           " "
         )[0]
     );
-    console.log(sortedData2, "datesArray");
+   
     return datesArray.slice(-7);
   };
 

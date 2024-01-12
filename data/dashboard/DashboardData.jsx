@@ -1,6 +1,6 @@
 "use client";
 // import node module libraries
-import { Fragment } from "react";
+import { Fragment, Suspense } from "react";
 import Link from "next/link";
 import { Container, Col, Row } from "react-bootstrap";
 import { Card } from "react-bootstrap";
@@ -15,9 +15,11 @@ import ResidualChart from "./ResidualChart";
 import DashboardNotification from "./notification/DashboardNotification";
 import EarningDetails from "./EarningDetails";
 import './Dashboard.css'
+import Loading from "app/Loading";
 const DashboardData = ({ data, notificationList }) => {
-  console.log("notificationList", notificationList);
+
   return (
+
     <Fragment>
       <div className="bg-primary pt-10 pb-21"></div>
       <Container fluid className="mt-n22 px-6 mb-6">
@@ -26,15 +28,15 @@ const DashboardData = ({ data, notificationList }) => {
 
           <Col lg={12} md={12} xs={12}>
             <div>
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex justify-content-start align-items-center">
                 <div className="mb-2 mb-lg-0">
                   <h3 className="mb-0  text-white">Accounts</h3>
                 </div>
-                <div>
+                {/* <div>
                   <Link href="#" className="btn btn-white">
                     Create New Project
                   </Link>
-                </div>
+                </div> */}
               </div>
             </div>
           </Col>
@@ -56,7 +58,7 @@ const DashboardData = ({ data, notificationList }) => {
                     <div>
                       <h1 className="fw-bold">{data.total_new_leads}</h1>
                       <p className="mb-0">
-                        <span className="text-dark me-2">2</span> Completed
+                        <span className="text-dark me-2"></span> Total
                       </p>
                     </div>
                   </Card.Body>
@@ -77,7 +79,7 @@ const DashboardData = ({ data, notificationList }) => {
                     <div>
                       <h1 className="fw-bold">{data.total_quotes}</h1>
                       <p className="mb-0">
-                        <span className="text-dark me-2">2</span> Completed
+                        <span className="text-dark me-2"></span> Total
                       </p>
                     </div>
                   </Card.Body>
@@ -98,7 +100,7 @@ const DashboardData = ({ data, notificationList }) => {
                     <div>
                       <h1 className="fw-bold">{data.total_new_applications}</h1>
                       <p className="mb-0">
-                        <span className="text-dark me-2">2</span> Completed
+                        <span className="text-dark me-2"></span> Total
                       </p>
                     </div>
                   </Card.Body>
@@ -138,6 +140,8 @@ const DashboardData = ({ data, notificationList }) => {
         </Row>
       </Container>
     </Fragment>
+
+
   );
 };
 export default DashboardData;

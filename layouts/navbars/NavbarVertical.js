@@ -19,14 +19,9 @@ import { signOut, useSession } from "next-auth/react";
 
 const NavbarVertical = (props) => {
   const location = usePathname();
-  const router =useRouter()
-  const { data: session, status } = useSession()
-  console.log('status2 :>> ', status);
-  useEffect(()=>{
-    if(status=== "unauthenticated"){
-      router.push('/authentication/sign-in')
-    }
-      },[status])
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
   const CustomToggle = ({ children, eventKey, icon }) => {
     const { activeEventKey } = useContext(AccordionContext);
     const decoratedOnClick = useAccordionButton(eventKey, () =>
@@ -97,19 +92,44 @@ const NavbarVertical = (props) => {
   };
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
-
+  function getFirstLetters(str) {
+    const words = str.split(" ");
+    const firstLetters = words.map((word) => word.charAt(0).toUpperCase());
+    return firstLetters.join("");
+  }
   return (
     <Fragment>
       <SimpleBar style={{ maxHeight: "100vh" }}>
-        <div className="nav-scroller">
-          <Link href="/" className="navbar-brand">
-            <h3
-              className="mb-2"
-              style={{ color: "white", fontWeight: "bolder" }}
+        <div className="nav-scroller text-center">
+          <Link href="/" className="navbar-brand mt-3">
+            <Image
+              style={{
+                height: "78px",
+                // width: "auto",
+                width: props?.profile?.image_url ? "82px" : "100%",
+                objectFit: "cover",
+                borderRadius: props?.profile?.image_url ? "50%" : 0,
+              }}
+              src={
+                props.profile?.image_url
+                  ? props.profile?.image_url
+                  : "/images/logo/nav_logo.png"
+              }
+              // src="/images/logo/nav_logo.png"
+              alt="logo"
+              height={71}
+              width={182}
+            />
+            <h4
+              style={{ color: "white", opacity: "0.6", marginTop: "15px" }}
+              className="mx-3"
             >
-              Sayma UI
-            </h3>
-            {/* <Image src="/images/brand/logo/logo.svg" alt="" /> */}
+              {props?.profile?.first_name +" " + props?.profile?.last_name}
+            </h4>
+            <h5 style={{ color: "white", opacity: "0.6", marginTop: "20px" }}>
+              {" "}
+              {/* ( {getFirstLetters(userData?.customer_type)} ) */}
+            </h5>
           </Link>
         </div>
         {/* Dashboard Menu */}
@@ -312,7 +332,8 @@ const NavbarVertical = (props) => {
                 return (
                   <Card bsPrefix="nav-item" key={index}>
                     {/* menu item without any childern items like Documentation and Changelog items*/}
-                    <Link onClick={()=> menu.title==="Logout"&& signOut()}
+                    <Link
+                      onClick={() => menu.title === "Logout" && signOut()}
                       href={menu.link}
                       className={`nav-link ${
                         location === menu.link ? "active" : ""
